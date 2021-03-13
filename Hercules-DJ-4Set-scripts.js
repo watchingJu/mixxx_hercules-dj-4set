@@ -24,14 +24,18 @@ HerculesDJ4Set.init = function(id) {
 	// extinguish all LEDs
 	HerculesDJ4Set.resetLEDs()
 
+/* wrong mapping: 0x3C = RECORD LED
 	midi.sendShortMsg(0x90, 0x3B, 0x7f) // headset volume "-" button LED (always on)
 	midi.sendShortMsg(0x90, 0x3C, 0x7f) // headset volume "+" button LED (always on)
+*/
 
+/*
 	if(engine.getValue("[Master]", "headMix") > 0.5) {
 		midi.sendShortMsg(0x90, 0x39, 0x7f) // headset "Mix" button LED
 	} else {
 		midi.sendShortMsg(0x90, 0x3A, 0x7f) // headset "Cue" button LED
 	}
+*/
 
     // Set soft-takeover for all Sampler volumes
     for (var i=engine.getValue("[Master]","num_samplers"); i>=1; i--) {
@@ -53,7 +57,7 @@ HerculesDJ4Set.init = function(id) {
 	engine.connectControl("[Channel2]", "beat_active", "HerculesDJ4Set.beatProgressDeckB")
 	engine.connectControl("[Channel2]", "play", "HerculesDJ4Set.playDeckB")
     
-    print ("Hercules DJ Control AIR: "+id+" initialized.");
+    print ("Hercules DJ 4Set: "+id+" initialized.");
 }
 
 HerculesDJ4Set.shutdown = function() {
