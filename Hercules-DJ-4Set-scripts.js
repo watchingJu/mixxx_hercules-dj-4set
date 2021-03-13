@@ -22,9 +22,8 @@ HerculesDJ4Set.init = function(id) {
     HerculesDJ4Set.id = id;
 
 	// extinguish all LEDs
-    for (var i = 79; i<79; i++) {
-        midi.sendShortMsg(0x90, i, 0x00);
-    }
+	HerculesDJ4Set.resetLEDs()
+
 	midi.sendShortMsg(0x90, 0x3B, 0x7f) // headset volume "-" button LED (always on)
 	midi.sendShortMsg(0x90, 0x3C, 0x7f) // headset volume "+" button LED (always on)
 
@@ -59,6 +58,12 @@ HerculesDJ4Set.init = function(id) {
 
 HerculesDJ4Set.shutdown = function() {
 	HerculesDJ4Set.resetLEDs()
+}
+
+HerculesDJ4Set.resetLEDs = function() {
+	for (var i = 0; i < 127; i++) {
+        	midi.sendShortMsg(0x90, i, 0x00);
+	}
 }
 
 /* -------------------------------------------------------------------------- */
