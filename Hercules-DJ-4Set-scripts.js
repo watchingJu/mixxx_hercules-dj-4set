@@ -1,21 +1,5 @@
 function HerculesDJ4Set () {}
 
-/*
-HerculesDJ4Set.beatStepDeckA1 = 0
-HerculesDJ4Set.beatStepDeckA2 = 0x44
-HerculesDJ4Set.beatStepDeckB1 = 0
-HerculesDJ4Set.beatStepDeckB2 = 0x4C
-*/
-
-HerculesDJ4Set.beatStepDeckA = 0x0E	// Play_DA Button LED = 0x0E
-HerculesDJ4Set.beatStepDeckB = 0x2E	// Play_DB Button LED = 0x2E
-
-HerculesDJ4Set.LEDon = 0x7F
-HerculesDJ4Set.LEDoff = 0x00
-
-HerculesDJ4Set.listenDA = 0x2F
-HerculesDJ4Set.listenDABL = 0x4F	// BL_Listen_DA
-HerculesDJ4Set.listenDBBL = 0x6F	// BL_Listen_DB - typo in official PDF
 
 HerculesDJ4Set.buttons = {
 	'[Channel1]': {
@@ -84,12 +68,6 @@ HerculesDJ4Set.init = function(id) {
     }
 
     engine.softTakeover("[Master]","crossfader",true);
-
-//	engine.connectControl("[Channel1]", "beat_active", "HerculesDJ4Set.beatProgressDeckA")
-//	engine.connectControl("[Channel1]", "play", "HerculesDJ4Set.playDeckA")
-
-//	engine.connectControl("[Channel2]", "beat_active", "HerculesDJ4Set.beatProgressDeckB")
-//	engine.connectControl("[Channel2]", "play", "HerculesDJ4Set.playDeckB")
     
     print ("Hercules DJ 4Set: "+id+" initialized.");
 }
