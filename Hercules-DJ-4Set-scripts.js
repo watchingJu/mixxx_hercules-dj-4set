@@ -1,9 +1,18 @@
 function HerculesDJ4Set () {}
 
+/*
 HerculesDJ4Set.beatStepDeckA1 = 0
 HerculesDJ4Set.beatStepDeckA2 = 0x44
 HerculesDJ4Set.beatStepDeckB1 = 0
 HerculesDJ4Set.beatStepDeckB2 = 0x4C
+*/
+
+HerculesDJ4Set.beatStepDeckA = 0x0E	// Play_DA Button LED = 0x0E
+HerculesDJ4Set.beatStepDeckB = 0x2E	// Play_DB Button LED = 0x2E
+
+HerculesDJ4Set.LEDon = 0x7F
+HerculesDJ4Set.LEDoff = 0x00
+
 
 HerculesDJ4Set.scratchEnable_alpha = 1.0
 HerculesDJ4Set.scratchEnable_beta = (1.0)/32
@@ -17,6 +26,9 @@ HerculesDJ4Set.enableSpinBack = false
 
 HerculesDJ4Set.wheel_multiplier = 5
 HerculesDJ4Set.scratching = [];
+
+
+/* ----Init-Shutdown--------------------------------------------------------- */
 
 HerculesDJ4Set.init = function(id) {
     HerculesDJ4Set.id = id;
@@ -36,6 +48,8 @@ HerculesDJ4Set.init = function(id) {
 		midi.sendShortMsg(0x90, 0x3A, 0x7f) // headset "Cue" button LED
 	}
 */
+
+
 
     // Set soft-takeover for all Sampler volumes
     for (var i=engine.getValue("[Master]","num_samplers"); i>=1; i--) {
@@ -64,63 +78,35 @@ HerculesDJ4Set.shutdown = function() {
 	HerculesDJ4Set.resetLEDs()
 }
 
+/* ------Helper-------------------------------------------------------------- */
+
 HerculesDJ4Set.resetLEDs = function() {
 	for (var i = 0; i < 127; i++) {
         	midi.sendShortMsg(0x90, i, 0x00);
 	}
 }
 
+/*--------Beat-Detection------------------------------------------------------*/
+
+var beatStepDeckA = function (value, group, control) {
+	if (value == 1) {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA, HerculesDJ4Set.LEDon); // see section below for an explanation of this example line
+	} else {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA, HerculesDJ4Set.LEDoff); // see section below for an explanation of this example line
+	}  
+};
+var beatStepDeckB = function (value, group, control) {
+	if (value == 1) {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB, HerculesDJ4Set.LEDon); // see section below for an explanation of this example line
+	} else {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB, HerculesDJ4Set.LEDoff); // see section below for an explanation of this example line
+	}  
+};
+
+var beatStepDeckAConnection = engine.makeConnection('[Channel1]', 'beat_active', beatStepDeckA);
+var beatStepDeckBConnection = engine.makeConnection('[Channel1]', 'beat_active', beatStepDeckB);
+
 /* -------------------------------------------------------------------------- */
-
-HerculesDJ4Set.playDeckA = function() {
-	if(engine.getValue("[Channel1]", "play") == 0) {
-		// midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA1, 0x00)
-		HerculesDJ4Set.beatStepDeckA1 = 0x00
-		HerculesDJ4Set.beatStepDeckA2 = 0x44
-	}
-}
-
-HerculesDJ4Set.playDeckB = function() {
-	if(engine.getValue("[Channel2]", "play") == 0) {
-		// midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB1, 0x00)
-		HerculesDJ4Set.beatStepDeckB1 = 0x00
-		HerculesDJ4Set.beatStepDeckB2 = 0x4C
-	}
-}
-
-HerculesDJ4Set.beatProgressDeckA = function() {
-	if(engine.getValue("[Channel1]", "beat_active") == 1) {
-		if(HerculesDJ4Set.beatStepDeckA1 != 0x00) {
-			midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA1, 0x00)
-		}
-
-		HerculesDJ4Set.beatStepDeckA1 = HerculesDJ4Set.beatStepDeckA2
-
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA2, 0x7f)
-		if(HerculesDJ4Set.beatStepDeckA2 < 0x47) {
-			HerculesDJ4Set.beatStepDeckA2++
-		} else {
-			HerculesDJ4Set.beatStepDeckA2 = 0x44
-		}
-	}
-}
-
-HerculesDJ4Set.beatProgressDeckB = function() {
-	if(engine.getValue("[Channel2]", "beat_active") == 1) {
-		if(HerculesDJ4Set.beatStepDeckB1 != 0) {
-			midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB1, 0x00)
-		}
-
-		HerculesDJ4Set.beatStepDeckB1 = HerculesDJ4Set.beatStepDeckB2
-
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB2, 0x7f)
-		if(HerculesDJ4Set.beatStepDeckB2 < 0x4F) {
-			HerculesDJ4Set.beatStepDeckB2++
-		} else {
-			HerculesDJ4Set.beatStepDeckB2 = 0x4C
-		}
-	}
-}
 
 HerculesDJ4Set.headCue = function(midino, control, value, status, group) {
 	if(engine.getValue(group, "headMix") == 0) {
