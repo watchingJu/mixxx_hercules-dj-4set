@@ -13,6 +13,26 @@ HerculesDJ4Set.beatStepDeckB = 0x2E	// Play_DB Button LED = 0x2E
 HerculesDJ4Set.LEDon = 0x7F
 HerculesDJ4Set.LEDoff = 0x00
 
+HerculesDJ4Set.listenDA = 0x2F
+HerculesDJ4Set.listenDABL = 0x4F	// BL_Listen_DA
+HerculesDJ4Set.listenDBBL = 0x6F	// BL_Listen_DB - typo in official PDF
+
+HerculesDJ4Set.buttons = {
+	'[Channel1]': {
+		'play': 0x0E,
+		'listen': 0x0F
+	},
+	'[Channel2]': {
+		'play': 0x2E,
+		'listen': 0x2F
+	}
+}
+
+HerculesDJ4Set.LED = {
+	'on': 0x7F,
+	'off': 0x00
+}
+
 
 HerculesDJ4Set.scratchEnable_alpha = 1.0
 HerculesDJ4Set.scratchEnable_beta = (1.0)/32
@@ -65,11 +85,11 @@ HerculesDJ4Set.init = function(id) {
 
     engine.softTakeover("[Master]","crossfader",true);
 
-	engine.connectControl("[Channel1]", "beat_active", "HerculesDJ4Set.beatProgressDeckA")
-	engine.connectControl("[Channel1]", "play", "HerculesDJ4Set.playDeckA")
+//	engine.connectControl("[Channel1]", "beat_active", "HerculesDJ4Set.beatProgressDeckA")
+//	engine.connectControl("[Channel1]", "play", "HerculesDJ4Set.playDeckA")
 
-	engine.connectControl("[Channel2]", "beat_active", "HerculesDJ4Set.beatProgressDeckB")
-	engine.connectControl("[Channel2]", "play", "HerculesDJ4Set.playDeckB")
+//	engine.connectControl("[Channel2]", "beat_active", "HerculesDJ4Set.beatProgressDeckB")
+//	engine.connectControl("[Channel2]", "play", "HerculesDJ4Set.playDeckB")
     
     print ("Hercules DJ 4Set: "+id+" initialized.");
 }
@@ -90,21 +110,23 @@ HerculesDJ4Set.resetLEDs = function() {
 
 var beatStepDeckA = function (value, group, control) {
 	if (value == 1) {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA, HerculesDJ4Set.LEDon); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
 	} else {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckA, HerculesDJ4Set.LEDoff); // see section below for an explanation of this example line
-	}  
-};
-var beatStepDeckB = function (value, group, control) {
-	if (value == 1) {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB, HerculesDJ4Set.LEDon); // see section below for an explanation of this example line
-	} else {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.beatStepDeckB, HerculesDJ4Set.LEDoff); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
 	}  
 };
 
+var beatStepDeckB = function (value, group, control) {
+	if (value == 1) {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
+	} else {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
+	}  
+};
+
+
 var beatStepDeckAConnection = engine.makeConnection('[Channel1]', 'beat_active', beatStepDeckA);
-var beatStepDeckBConnection = engine.makeConnection('[Channel1]', 'beat_active', beatStepDeckB);
+var beatStepDeckBConnection = engine.makeConnection('[Channel2]', 'beat_active', beatStepDeckB);
 
 /* -------------------------------------------------------------------------- */
 
