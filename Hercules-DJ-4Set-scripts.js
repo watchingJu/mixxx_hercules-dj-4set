@@ -4,17 +4,21 @@ function HerculesDJ4Set () {}
 HerculesDJ4Set.buttons = {
 	'[Channel1]': {
 		'play': 0x0E,
-		'listen': 0x0F
+		'listen': 0x0F,
+		'listen_bl': 0x4F,
+		'sync': 0x11
 	},
 	'[Channel2]': {
 		'play': 0x2E,
-		'listen': 0x2F
+		'listen': 0x2F,
+		'listen_bl': 0x6F,
+		'sync': 0x31
 	}
 }
 
 HerculesDJ4Set.LED = {
 	'on': 0x7F,
-	'off': 0x00
+	'off': 0x00,
 }
 
 
@@ -88,17 +92,17 @@ HerculesDJ4Set.resetLEDs = function() {
 
 var beatStepDeckA = function (value, group, control) {
 	if (value == 1) {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].sync, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
 	} else {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].sync, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
 	}  
 };
 
 var beatStepDeckB = function (value, group, control) {
 	if (value == 1) {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].sync, HerculesDJ4Set.LED.on); // see section below for an explanation of this example line
 	} else {
-		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].play, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].sync, HerculesDJ4Set.LED.off); // see section below for an explanation of this example line
 	}  
 };
 
@@ -107,6 +111,29 @@ var beatStepDeckAConnection = engine.makeConnection('[Channel1]', 'beat_active',
 var beatStepDeckBConnection = engine.makeConnection('[Channel2]', 'beat_active', beatStepDeckB);
 
 /* -------------------------------------------------------------------------- */
+
+var pflCuingA = function (value, group, control) {
+	if (value === 1) {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].listen_bl, HerculesDJ4Set.LED.on);
+	} else {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].listen_bl, HerculesDJ4Set.LED.off);
+	}
+}
+var pflCuingB = function (value, group, control) {
+	if (value === 1) {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].listen_bl, HerculesDJ4Set.LED.on);
+	} else {
+		midi.sendShortMsg(0x90, HerculesDJ4Set.buttons[group].listen_bl, HerculesDJ4Set.LED.off);
+	}
+}
+
+var pflCuingAConnection = engine.makeConnection('[Channel1]', 'pfl', pflCuingA);
+var pflCuingAConnection = engine.makeConnection('[Channel2]', 'pfl', pflCuingB);
+
+
+
+
+
 
 HerculesDJ4Set.headCue = function(midino, control, value, status, group) {
 	if(engine.getValue(group, "headMix") == 0) {
