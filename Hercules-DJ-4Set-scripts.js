@@ -14,6 +14,7 @@ HerculesDJ4Set.buttons = {
 		'listen_bl': 0x6F,
 		'sync': 0x31
 	}
+}
 
 HerculesDJ4Set.sliders = {
 	'vol_da': 0x03,
@@ -44,7 +45,7 @@ HerculesDJ4Set.sliders = {
 	'mic_vol': 0x0c,
 	'vol_main': 0x21,
 	'xfader': 0x22,
-	'cue_to_mix': 23
+	'cue_to_mix': 0x23
 }
 
 HerculesDJ4Set.LED = {
@@ -73,7 +74,12 @@ HerculesDJ4Set.init = function(id) {
     HerculesDJ4Set.id = id;
 
 	// extinguish all LEDs
-	HerculesDJ4Set.resetLEDs()
+	HerculesDJ4Set.resetLEDs();
+	print('Script: Ok, LEDs reset.');
+
+	// updates visuals in mixxx
+	HerculesDJ4Set.updateControls();
+	print('Script: Ok, controls updated.');
 
 /* wrong mapping: 0x3C = RECORD LED
 	midi.sendShortMsg(0x90, 0x3B, 0x7f) // headset volume "-" button LED (always on)
@@ -115,9 +121,15 @@ HerculesDJ4Set.shutdown = function() {
 /* ------Helper-------------------------------------------------------------- */
 
 HerculesDJ4Set.resetLEDs = function() {
+	print('Script: reset LEDs');
 	for (var i = 0; i < 127; i++) {
         	midi.sendShortMsg(0x90, i, 0x00);
 	}
+}
+
+HerculesDJ4Set.updateControls = function() {
+	print('Script: get values');
+	midi.sendShortMsg(0xB0, 0x7F, 0x7F);
 }
 
 /*--------Beat-Detection------------------------------------------------------*/
