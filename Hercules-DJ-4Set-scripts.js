@@ -14,6 +14,37 @@ HerculesDJ4Set.buttons = {
 		'listen_bl': 0x6F,
 		'sync': 0x31
 	}
+
+HerculesDJ4Set.sliders = {
+	'vol_da': 0x03,
+	'pitch_da': 0x05,
+	'treble_da': 0x06,
+	'medium_da': 0x07,
+	'bass_da': 0x08,
+
+	'vol_db': 0x0B,
+	'pitch_db': 0x0D,
+	'treble_db': 0x0E,
+	'medium_db': 0x0F,
+	'bass_db': 0x10,
+
+	'vol_dc': 0x13,
+	'pitch_dc': 0x15,
+	'treble_dc': 0x16,
+	'medium_dc': 0x17,
+	'bass_dc': 0x18,
+
+	'vol_dd': 0x1B,
+	'pitch_dd': 0x1D,
+	'treble_dd': 0x1E,
+	'medium_dd': 0x1F,
+	'bass_dd': 0x20,
+
+
+	'mic_vol': 0x0c,
+	'vol_main': 0x21,
+	'xfader': 0x22,
+	'cue_to_mix': 23
 }
 
 HerculesDJ4Set.LED = {
@@ -79,6 +110,7 @@ HerculesDJ4Set.init = function(id) {
 HerculesDJ4Set.shutdown = function() {
 	HerculesDJ4Set.resetLEDs()
 }
+
 
 /* ------Helper-------------------------------------------------------------- */
 
